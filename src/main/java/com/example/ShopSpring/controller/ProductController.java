@@ -4,6 +4,7 @@ import com.example.ShopSpring.dtos.ProductDTO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.springframework.boot.autoconfigure.session.RedisSessionProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,13 +57,14 @@ public class ProductController {
                         .toList();
                 return ResponseEntity.badRequest().body(errors);
             }
-            MultipartFile file = productDTO.getFile();
-            if(file!=null){
-                if(file.isEmpty()){
-                    return ResponseEntity.badRequest().body("file must be not empty");
-                }
+            List<MultipartFile> files = productDTO.getFiles();
+            files = files == null ? new ArrayList<>() : files;
+            List<String> fileNames = new ArrayList<>();
+            for(var file : files){
+                if(file.getSize()==0)
+                    continue;
 
-                if(file.getSize() > 10 * 10 * 1024)
+                if(file.getSize() > 10 * 1024 * 1024)
                     return ResponseEntity.badRequest().body("file size too large");
 
                 String contentType = file.getContentType();
@@ -94,7 +97,6 @@ public class ProductController {
         Files.copy(file.getInputStream(),destination,StandardCopyOption.REPLACE_EXISTING);
         return uniqueName;
     }
-
 
     @PutMapping("{id}")
     public ResponseEntity<String> updateProduct(@PathVariable int id){
