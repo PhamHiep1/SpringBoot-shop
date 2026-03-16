@@ -1,10 +1,8 @@
 package com.example.ShopSpring.controller;
 
-
 import com.example.ShopSpring.dtos.OrderDTO;
+import com.example.ShopSpring.dtos.OrderDetailDTO;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -13,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("${api.prefix}/orders")
-public class OrderController {
+@RequestMapping("${api.prefix}/order_details")
+public class OrderDetailController {
     @PostMapping
-    public ResponseEntity<?> createOrder(
-            @Valid @RequestBody OrderDTO orderDTO,
+    public ResponseEntity<?> createOrderDetail(
+            @Valid @RequestBody OrderDetailDTO orderDetailDTO,
             BindingResult result
-            ){
+    ){
         try{
             if(result.hasErrors()){
                 List<String> errors = result.getFieldErrors()
@@ -27,47 +25,48 @@ public class OrderController {
                         .toList();
                 return ResponseEntity.badRequest().body(errors);
             }
-            return ResponseEntity.ok("create order successfully "+ orderDTO);
+            return ResponseEntity.ok("create order successfully "+ orderDetailDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrder(
-            @Valid @PathVariable() Long id
+    public ResponseEntity<?> getOrderDetail(
+            @Valid @PathVariable(value="id") Long orderDetailId
     ){
         try{
-            return ResponseEntity.ok("get successfully"+id);
+            return ResponseEntity.ok("get successfully"+orderDetailId);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("user/{user_id}")
-    public ResponseEntity<?> getOrders(
-         @Valid @PathVariable(value = "user_id") Long userId
+
+    @GetMapping("order/{order_id}")
+    public ResponseEntity<?> getOrderDetails(
+            @Valid @PathVariable(value = "order_id") Long orderId
     ){
         try{
-            return ResponseEntity.ok("get successfully"+userId);
+            return ResponseEntity.ok("get successfully"+orderId);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateOrder(
+    public ResponseEntity<?> updateOrderDetail(
             @Valid @PathVariable Long id,
-            @RequestBody OrderDTO orderDTO
-            ){
+            @RequestBody OrderDetailDTO orderDetailDTO
+    ){
 
-        return ResponseEntity.ok("update successfully order "+id);
+        return ResponseEntity.ok("update successfully order detail "+id+ " order detail : "+orderDetailDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrder(
+    public ResponseEntity<?> deleteOrderDetail(
             @Valid @PathVariable Long id
     ){
 
-        return ResponseEntity.ok("update successfully order "+id);
+        return ResponseEntity.ok("update successfully order detail "+id);
     }
 }
