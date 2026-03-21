@@ -2,6 +2,7 @@ package com.example.ShopSpring.controller;
 
 import com.example.ShopSpring.dtos.ProductDTO;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.boot.autoconfigure.session.RedisSessionProperties;
@@ -27,29 +28,14 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("${api.prefix}/products")
+@RequiredArgsConstructor
+@RequestMapping("${api.prefix} /products")
 public class ProductController {
-
-    @GetMapping
-    public ResponseEntity<?> getProducts(
-            @RequestParam(value="page", defaultValue = "0") int page,
-            @RequestParam(value="limit", defaultValue = "10") int limit
-    ){
-        return ResponseEntity.ok("get all success");
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<?> getProductById(
-            @PathVariable int id
-    ){
-        return ResponseEntity.ok("get success"+id);
-    }
-
     @PostMapping(value="",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createProduct(
             @Valid @ModelAttribute ProductDTO productDTO,
             BindingResult result
-            ){
+    ){
         try{
             if(result.hasErrors()){
                 List<String> errors = result.getFieldErrors()
@@ -81,6 +67,23 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> getProducts(
+            @RequestParam(value="page", defaultValue = "0") int page,
+            @RequestParam(value="limit", defaultValue = "10") int limit
+    ){
+        return ResponseEntity.ok("get all success");
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> getProductById(
+            @PathVariable int id
+    ){
+        return ResponseEntity.ok("get success"+id);
+    }
+
+
 
 
 
