@@ -21,7 +21,7 @@ public class Product extends BaseModel{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name",nullable = false, length = 350)
+    @Column(name="product_name",nullable = false, length = 350)
     private String name;
 
     private Float price;

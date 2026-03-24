@@ -1,6 +1,12 @@
 package com.example.ShopSpring.controller;
 
 import com.example.ShopSpring.dtos.ProductDTO;
+import com.example.ShopSpring.dtos.ProductImageDTO;
+import com.example.ShopSpring.models.Product;
+import com.example.ShopSpring.models.ProductImage;
+import com.example.ShopSpring.repositories.ProductImageRepository;
+import com.example.ShopSpring.repositories.ProductRepository;
+import com.example.ShopSpring.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +30,18 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${api.prefix} /products")
+@RequestMapping("${api.prefix}/products")
 public class ProductController {
-    @PostMapping(value="",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    private final ProductService productService;
+
+    @PostMapping()
     public ResponseEntity<?> createProduct(
-            @Valid @ModelAttribute ProductDTO productDTO,
+            @Valid @RequestBody ProductDTO productDTO,
             BindingResult result
     ){
         try{
@@ -43,9 +51,31 @@ public class ProductController {
                         .toList();
                 return ResponseEntity.badRequest().body(errors);
             }
-            List<MultipartFile> files = productDTO.getFiles();
+            Product newProduct = productService.createProduct(productDTO);
+            return ResponseEntity.ok(newProduct);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value ="/uploads/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(
+            @PathVariable("id") Long productId,
+            @ModelAttribute("files") List<MultipartFile> files
+    ){
+        try{
+            Product existingProduct = productService
+                    .getProductById(productId);
             files = files == null ? new ArrayList<>() : files;
-            List<String> fileNames = new ArrayList<>();
+
+            if(files.size()>ProductImage.MAXIMUM_IMAGES_PER_PRODUCT)
+                return ResponseEntity
+                        .badRequest()
+                        .body("you can only upload maximum 5 images");
+
+            List<ProductImage> productImages = new ArrayList<>();
+
             for(var file : files){
                 if(file.getSize()==0)
                     continue;
@@ -59,14 +89,35 @@ public class ProductController {
                             .body("this file is not image");
 
                 String fileName = storeFile(file);
+                ProductImage productImage =  productService.createProductImage(
+                        existingProduct.getId(),
+                        ProductImageDTO.builder()
+                                .imageURL(fileName)
+                                .build());
+                productImages.add(productImage);
             }
-            return ResponseEntity.ok("createProduct success"+productDTO);
-
-        }catch (Exception e){
-            log.error("loi khi tao sp",e);
+            return ResponseEntity.ok(productImages);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    public String storeFile(MultipartFile file) throws IOException {
+        String originalName = StringUtils.cleanPath(
+                Objects.requireNonNull(
+                        file.getOriginalFilename()));
+        String uniqueName = UUID.randomUUID().toString() + " " + originalName;
+
+        Path uploadDir = Paths.get("uploads");
+        if(!Files.exists(uploadDir))
+            Files.createDirectories(uploadDir);
+
+        Path destination = uploadDir.resolve(uniqueName);
+
+        Files.copy(file.getInputStream(),destination,StandardCopyOption.REPLACE_EXISTING);
+        return uniqueName;
+    }
+
 
     @GetMapping
     public ResponseEntity<?> getProducts(
@@ -84,22 +135,6 @@ public class ProductController {
     }
 
 
-
-
-
-    public String storeFile(MultipartFile file) throws IOException {
-        String originalName = StringUtils.cleanPath(file.getOriginalFilename());
-        String uniqueName = UUID.randomUUID().toString() + " " + originalName;
-
-        Path uploadDir = Paths.get("uploads");
-        if(!Files.exists(uploadDir))
-            Files.createDirectories(uploadDir);
-
-        Path destination = uploadDir.resolve(uniqueName);
-
-        Files.copy(file.getInputStream(),destination,StandardCopyOption.REPLACE_EXISTING);
-        return uniqueName;
-    }
 
     @PutMapping("{id}")
     public ResponseEntity<String> updateProduct(@PathVariable int id){

@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class ProductDTO {
     @NotBlank(message = "name is not null")
     @Size(min=3,max=200, message = "name (3,200)")
@@ -35,5 +34,4 @@ public class ProductDTO {
     @JsonProperty("category_id")
     private Long categoryId;
 
-    private List<MultipartFile> files;
 }

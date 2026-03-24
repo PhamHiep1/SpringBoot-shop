@@ -1,10 +1,14 @@
 package com.example.ShopSpring.services;
 
 import com.example.ShopSpring.dtos.ProductDTO;
+import com.example.ShopSpring.dtos.ProductImageDTO;
 import com.example.ShopSpring.exceptions.DataNotFoundException;
+import com.example.ShopSpring.exceptions.InvalidParamException;
 import com.example.ShopSpring.models.Category;
 import com.example.ShopSpring.models.Product;
+import com.example.ShopSpring.models.ProductImage;
 import com.example.ShopSpring.repositories.CategoryRepository;
+import com.example.ShopSpring.repositories.ProductImageRepository;
 import com.example.ShopSpring.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,8 @@ import java.util.Optional;
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductImageRepository productImageRepository;
+
 
     @Override
     @Transactional
@@ -57,19 +63,23 @@ public class ProductService implements IProductService{
     @Transactional
     public Product updateProduct(Long id, ProductDTO productDTO) throws Exception {
         Product existingProduct = getProductById(id);
-        Category existingCategory =  categoryRepository
-                .findById(productDTO.getCategoryId())
-                .orElseThrow(
-                        ()-> new DataNotFoundException(
-                                "cannot find category with id "
-                                        +productDTO.getCategoryId()));
 
-        existingProduct.setName(productDTO.getName());
-        existingProduct.setCategory(existingCategory);
-        existingProduct.setDescription(productDTO.getDescription());
-        existingProduct.setPrice(productDTO.getPrice());
-        existingProduct.setThumbnail(productDTO.getThumbnail());
-        return productRepository.save(existingProduct);
+        if(existingProduct != null){
+            Category existingCategory =  categoryRepository
+                    .findById(productDTO.getCategoryId())
+                    .orElseThrow(
+                            ()-> new DataNotFoundException(
+                                    "cannot find category with id "
+                                            +productDTO.getCategoryId()));
+
+            existingProduct.setName(productDTO.getName());
+            existingProduct.setCategory(existingCategory);
+            existingProduct.setDescription(productDTO.getDescription());
+            existingProduct.setPrice(productDTO.getPrice());
+            existingProduct.setThumbnail(productDTO.getThumbnail());
+            return productRepository.save(existingProduct);
+        }
+        return null;
     }
 
     @Override
@@ -82,5 +92,30 @@ public class ProductService implements IProductService{
     @Override
     public boolean existByName(String name) {
         return productRepository.existsByName(name);
+    }
+
+    @Override
+    public ProductImage createProductImage(
+            Long productId, ProductImageDTO productImageDTO)
+            throws Exception {
+        Product existingProduct = productRepository
+                .findById(productId)
+                .orElseThrow(()-> new DataNotFoundException(
+                        "cannot find product with id="
+                                +productId));
+
+        int size = productImageRepository.findByProductId(productId).size();
+
+        if(size >ProductImage.MAXIMUM_IMAGES_PER_PRODUCT){
+            throw new InvalidParamException(
+                    "Number of images <="+
+                            ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+        }
+        ProductImage newProductImage = ProductImage.builder()
+                .product(existingProduct)
+                .imageURL(productImageDTO.getImageURL())
+                .build();
+
+        return productImageRepository.save(newProductImage);
     }
 }
