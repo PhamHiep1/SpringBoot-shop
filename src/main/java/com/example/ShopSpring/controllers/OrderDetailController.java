@@ -1,6 +1,5 @@
-package com.example.ShopSpring.controller;
+package com.example.ShopSpring.controllers;
 
-import com.example.ShopSpring.dtos.OrderDTO;
 import com.example.ShopSpring.dtos.OrderDetailDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -10,6 +10,7 @@ import com.example.ShopSpring.models.ProductImage;
 import com.example.ShopSpring.repositories.CategoryRepository;
 import com.example.ShopSpring.repositories.ProductImageRepository;
 import com.example.ShopSpring.repositories.ProductRepository;
+import com.example.ShopSpring.responses.ProductResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,13 +56,28 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Page<Product> getAllProducts(PageRequest pageRequest) {
-        return productRepository.findAll(pageRequest);
+    public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
+        return productRepository.findAll(pageRequest)
+                .map(product-> {
+                    ProductResponse productResponse =
+                            ProductResponse.builder()
+                                    .name(product.getName())
+                                    .description(product.getDescription())
+                                    .price(product.getPrice())
+                                    .thumbnail(product.getThumbnail())
+                                    .categoryId(product.getCategory().getId())
+                                    .build();
+                    productResponse.setCreatedAt(product.getCreatedAt());
+                    productResponse.setUpdatedAt(product.getUpdatedAt());
+                    return productResponse;
+                }
+        );
     }
 
     @Override
     @Transactional
-    public Product updateProduct(Long id, ProductDTO productDTO) throws Exception {
+    public Product updateProduct(Long id, ProductDTO productDTO)
+            throws Exception {
         Product existingProduct = getProductById(id);
 
         if(existingProduct != null){

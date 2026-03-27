@@ -1,4 +1,4 @@
-package com.example.ShopSpring.controller;
+package com.example.ShopSpring.controllers;
 
 
 import com.example.ShopSpring.dtos.UserDTO;
@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.Binding;
 import java.util.List;
 
 @RestController

@@ -1,19 +1,17 @@
-package com.example.ShopSpring.controller;
+package com.example.ShopSpring.controllers;
 
 import com.example.ShopSpring.dtos.ProductDTO;
 import com.example.ShopSpring.dtos.ProductImageDTO;
 import com.example.ShopSpring.models.Product;
 import com.example.ShopSpring.models.ProductImage;
-import com.example.ShopSpring.repositories.ProductImageRepository;
-import com.example.ShopSpring.repositories.ProductRepository;
+import com.example.ShopSpring.responses.ProductResponse;
 import com.example.ShopSpring.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.springframework.boot.autoconfigure.session.RedisSessionProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -124,7 +121,13 @@ public class ProductController {
             @RequestParam(value="page", defaultValue = "0") int page,
             @RequestParam(value="limit", defaultValue = "10") int limit
     ){
-        return ResponseEntity.ok("get all success");
+        PageRequest pageRequest = PageRequest.of(
+                page,limit,
+                Sort.by("createdAt").descending());
+        Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
+        int totalPage = productPage.getTotalPages();
+        List<ProductResponse> products = productPage.getContent();
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("{id}")

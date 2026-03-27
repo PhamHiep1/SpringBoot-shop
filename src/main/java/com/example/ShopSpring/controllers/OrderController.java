@@ -1,10 +1,8 @@
-package com.example.ShopSpring.controller;
+package com.example.ShopSpring.controllers;
 
 
 import com.example.ShopSpring.dtos.OrderDTO;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
