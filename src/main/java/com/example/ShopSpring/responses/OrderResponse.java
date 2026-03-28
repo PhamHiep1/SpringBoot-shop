@@ -1,14 +1,13 @@
-package com.example.ShopSpring.dtos;
+package com.example.ShopSpring.responses;
 
+import com.example.ShopSpring.models.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -16,33 +15,48 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderDTO {
+public class OrderResponse extends BaseResponse{
+
     @JsonProperty("user_id")
-    @Min(value=1, message = "user id must be > 0")
     private Long userId;
 
     @JsonProperty("full_name")
     private String fullName;
 
+    @JsonProperty
     private String email;
 
     @JsonProperty("phone_number")
-    @NotBlank(message = "phone number is not null")
     private String phoneNumber;
 
+    @JsonProperty()
     private String address;
+
+    @JsonProperty()
     private String note;
 
+    @JsonProperty("order_date")
+    private LocalDateTime orderDate;
+
+    private String status;
+
     @JsonProperty("total_money")
-    @Min(value=0, message = "total money must be >= 0")
     private Float totalMoney;
 
     @JsonProperty("shipping_method")
     private String shippingMethod;
 
+    @JsonProperty("shipping_address")
+    private String shippingAddress;
+
     @JsonProperty("shipping_date")
-    private LocalDate shippingDate;
+    private Date shippingDate;
+
+    @JsonProperty("tracking_number")
+    private String trackingNumber;
 
     @JsonProperty("payment_method")
     private String paymentMethod;
+
+    private Boolean active;
 }

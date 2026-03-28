@@ -2,7 +2,12 @@ package com.example.ShopSpring.controllers;
 
 
 import com.example.ShopSpring.dtos.OrderDTO;
+import com.example.ShopSpring.models.Order;
+import com.example.ShopSpring.models.User;
+import com.example.ShopSpring.responses.OrderResponse;
+import com.example.ShopSpring.services.OrderService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -11,8 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("${api.prefix}/orders")
 public class OrderController {
+    private final OrderService orderService;
+
     @PostMapping
     public ResponseEntity<?> createOrder(
             @Valid @RequestBody OrderDTO orderDTO,
@@ -25,7 +33,8 @@ public class OrderController {
                         .toList();
                 return ResponseEntity.badRequest().body(errors);
             }
-            return ResponseEntity.ok("create order successfully "+ orderDTO);
+            Order order = orderService.createOrder(orderDTO);
+            return ResponseEntity.ok(order);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -36,17 +45,19 @@ public class OrderController {
             @Valid @PathVariable() Long id
     ){
         try{
-            return ResponseEntity.ok("get successfully"+id);
+            Order order = orderService.getOrder(id);
+            return ResponseEntity.ok(order);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("user/{user_id}")
+    @GetMapping("/user/{user_id}")
     public ResponseEntity<?> getOrders(
          @Valid @PathVariable(value = "user_id") Long userId
     ){
         try{
-            return ResponseEntity.ok("get successfully"+userId);
+            List<Order> orders = orderService.findByUserId(userId);
+            return ResponseEntity.ok(orders);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -57,8 +68,13 @@ public class OrderController {
             @Valid @PathVariable Long id,
             @RequestBody OrderDTO orderDTO
             ){
+        try {
+            Order order = orderService.updateOrder(id,orderDTO);
+            return ResponseEntity.ok(order);
 
-        return ResponseEntity.ok("update successfully order "+id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @DeleteMapping("/{id}")

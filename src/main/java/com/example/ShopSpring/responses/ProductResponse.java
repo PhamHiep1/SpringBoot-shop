@@ -1,6 +1,7 @@
 package com.example.ShopSpring.responses;
 
 
+import com.example.ShopSpring.models.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,4 +24,18 @@ public class ProductResponse extends BaseResponse{
 
     @JsonProperty("category_id")
     private Long categoryId;
+
+    public static ProductResponse fromProduct(Product product){
+        ProductResponse productResponse =
+                ProductResponse.builder()
+                        .name(product.getName())
+                        .description(product.getDescription())
+                        .price(product.getPrice())
+                        .thumbnail(product.getThumbnail())
+                        .categoryId(product.getCategory().getId())
+                        .build();
+        productResponse.setCreatedAt(product.getCreatedAt());
+        productResponse.setUpdatedAt(product.getUpdatedAt());
+        return productResponse;
+    }
 }

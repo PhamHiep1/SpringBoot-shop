@@ -58,20 +58,7 @@ public class ProductService implements IProductService{
     @Override
     public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
         return productRepository.findAll(pageRequest)
-                .map(product-> {
-                    ProductResponse productResponse =
-                            ProductResponse.builder()
-                                    .name(product.getName())
-                                    .description(product.getDescription())
-                                    .price(product.getPrice())
-                                    .thumbnail(product.getThumbnail())
-                                    .categoryId(product.getCategory().getId())
-                                    .build();
-                    productResponse.setCreatedAt(product.getCreatedAt());
-                    productResponse.setUpdatedAt(product.getUpdatedAt());
-                    return productResponse;
-                }
-        );
+                .map(ProductResponse::fromProduct);
     }
 
     @Override

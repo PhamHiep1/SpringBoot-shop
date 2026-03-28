@@ -41,7 +41,7 @@ public class OrderDetailController {
         }
     }
 
-    @GetMapping("order/{order_id}")
+    @GetMapping("/order/{order_id}")
     public ResponseEntity<?> getOrderDetails(
             @Valid @PathVariable(value = "order_id") Long orderId
     ){
