@@ -81,7 +81,7 @@ public class OrderController {
     public ResponseEntity<?> deleteOrder(
             @Valid @PathVariable Long id
     ){
-
+        orderService.deleteOrder(id);
         return ResponseEntity.ok("update successfully order "+id);
     }
 }
