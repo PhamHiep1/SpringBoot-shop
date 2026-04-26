@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthenticationLoginRequest {
+public class AuthenticationRequest {
     @JsonProperty("phone_number")
     @NotBlank(message = "phone number is required")
     private String phoneNumber;

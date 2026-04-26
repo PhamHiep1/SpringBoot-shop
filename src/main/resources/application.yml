@@ -15,7 +15,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
   servlet:
@@ -24,12 +24,18 @@ spring:
       max-request-size: 10MB
 
 api:
-  prefix: api/v1
+  prefix: /api/v1
 
 application:
   security:
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 86400000 # a day
+      expiration: 86_400_000 # a day
       refresh-token:
-        expiration: 604800000 # 7 days
+        expiration: 604_800_000 # 7 days
+
+logging:
+  pattern:
+    console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
+
+  #eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIwMjAyMDIyMDIiLCJpYXQiOjE3NzcxNzQ0NzgsImV4cCI6MTc3NzI2MDg3OH0.b00V8L32a9-XEtyyx6N7yWf_aBLfI8y8i59U8-kpJedZ1dLQSTYfKEe4_z_UiqNI

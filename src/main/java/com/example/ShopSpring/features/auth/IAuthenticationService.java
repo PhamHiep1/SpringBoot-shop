@@ -1,9 +1,11 @@
 package com.example.ShopSpring.features.auth;
 
+import com.example.ShopSpring.features.auth.dto.AuthenticationRequest;
+import com.example.ShopSpring.features.auth.dto.AuthenticationResponse;
 import com.example.ShopSpring.features.auth.dto.RegisterRequest;
 import com.example.ShopSpring.features.user.User;
 
 public interface IAuthenticationService {
-    User login(String phoneNumber, String password);
-    User register(RegisterRequest registerRequest);
+    AuthenticationResponse login(AuthenticationRequest authenticationRequest) throws RuntimeException;
+    AuthenticationResponse register(RegisterRequest registerRequest);
 }
