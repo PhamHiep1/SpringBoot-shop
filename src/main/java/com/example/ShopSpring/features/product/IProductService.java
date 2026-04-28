@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 public interface IProductService {
     Product createProduct(ProductRequest productRequest) ;
     Product getProductById(Long id) ;
-    Page<ProductResponse> getAllProducts(PageRequest pageRequest);
+    Page<ProductResponse> getAllProducts(String keyword,Long categoryId,PageRequest pageRequest);
     Product updateProduct(Long id, ProductRequest productRequest);
     void deleteProduct(Long id);
     boolean existByName(String name);

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -33,4 +35,9 @@ public class Product extends BaseModel {
     @ManyToOne
     @JoinColumn (name="category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<ProductImage> productImages;
 }

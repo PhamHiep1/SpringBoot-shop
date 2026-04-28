@@ -5,6 +5,7 @@ import com.example.ShopSpring.features.product.dto.ProductImageRequest;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,6 +84,23 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<?> getImage(@PathVariable String imageName){
+        try{
+            Path imagePath = Paths.get("uploads/"+imageName);
+            UrlResource urlResource = new UrlResource(imagePath.toUri());
+            if(urlResource.exists()){
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(urlResource);
+            } else{
+                return ResponseEntity.notFound().build();
+            }
+        }catch(Exception exception){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     public String storeFile(MultipartFile file) throws IOException {
         String originalName = StringUtils.cleanPath(
                 Objects.requireNonNull(
@@ -97,27 +116,6 @@ public class ProductController {
         Files.copy(file.getInputStream(),destination,StandardCopyOption.REPLACE_EXISTING);
         return uniqueName;
     }
-
-
-    @GetMapping
-    public ResponseEntity<?> getProducts(
-            @RequestParam(value="page", defaultValue = "0") int page,
-            @RequestParam(value="limit", defaultValue = "10") int limit
-    ){
-        PageRequest pageRequest = PageRequest.of(
-                page,limit,
-                Sort.by("createdAt").descending());
-        Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
-        int totalPage = productPage.getTotalPages();
-        List<ProductResponse> products = productPage.getContent();
-
-        return ResponseEntity.ok(ProductListResponse
-                .builder()
-                .products(products)
-                .totalPage(totalPage)
-                .build());
-    }
-
     //@PostMapping("/generateFakeProducts")
     private ResponseEntity<?> generateFakeProducts(){
         Faker faker = new Faker();
@@ -146,6 +144,31 @@ public class ProductController {
 
         return ResponseEntity.ok(
                 "generate fake products successfully");
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getProducts(
+            @RequestParam(value="page", defaultValue = "0") int page,
+            @RequestParam(value="limit", defaultValue = "10") int limit,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword,
+            @RequestParam(value = "category_id", defaultValue = "0") Long categoryId
+    ){
+        PageRequest pageRequest = PageRequest.of(
+                page,limit,
+                //Sort.by("createdAt").descending());
+                Sort.by("id").ascending());
+
+        Page<ProductResponse> productPage = productService
+                .getAllProducts(keyword,categoryId,pageRequest);
+
+        int totalPages = productPage.getTotalPages();
+        List<ProductResponse> products = productPage.getContent();
+
+        return ResponseEntity.ok(ProductListResponse
+                .builder()
+                .products(products)
+                .totalPages(totalPages)
+                .build());
     }
 
     @GetMapping("/{id}")

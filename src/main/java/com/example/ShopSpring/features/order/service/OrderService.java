@@ -7,6 +7,7 @@ import com.example.ShopSpring.features.order.model.OrderStatus;
 import com.example.ShopSpring.features.order.repository.OrderRepository;
 import com.example.ShopSpring.features.user.User;
 import com.example.ShopSpring.features.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
 
+    @Transactional
     @Override
     public Order createOrder(OrderRequest orderRequest) {
         User existingUser = userRepository
@@ -56,6 +58,7 @@ public class OrderService implements IOrderService {
                 .orElse(null);
     }
 
+    @Transactional
     @Override
     public Order updateOrder(Long id, OrderRequest orderRequest){
         Order order = orderRepository.findById(id)
@@ -77,6 +80,7 @@ public class OrderService implements IOrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional
     @Override
     public void deleteOrder(Long id) {
         Order order = orderRepository.findById(id).orElse(null);

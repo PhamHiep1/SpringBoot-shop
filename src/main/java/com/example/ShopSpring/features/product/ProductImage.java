@@ -1,5 +1,6 @@
 package com.example.ShopSpring.features.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class ProductImage {
     private String imageURL;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="product_id")
     private Product product;
 }

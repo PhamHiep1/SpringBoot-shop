@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +25,8 @@ public class ProductResponse extends BaseResponse {
     @JsonProperty("category_id")
     private Long categoryId;
 
+    private List<ProductImage> images = new ArrayList<>();
+
     public static ProductResponse fromProduct(Product product){
         ProductResponse productResponse =
                 ProductResponse.builder()
@@ -31,6 +36,7 @@ public class ProductResponse extends BaseResponse {
                         .price(product.getPrice())
                         .thumbnail(product.getThumbnail())
                         .categoryId(product.getCategory().getId())
+                        .images(product.getProductImages())
                         .build();
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());

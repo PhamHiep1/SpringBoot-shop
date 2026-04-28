@@ -32,6 +32,10 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
     ) throws IOException {
 
         try{
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+            }
             if(shouldNotFilter(request)){
                 filterChain.doFilter(request,response);
                 return;
@@ -40,7 +44,9 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
             final String authHeader = request.getHeader("Authorization");
 
             if(authHeader == null || !authHeader.startsWith("Bearer ")){
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "...");
+//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "...");
+//                return;
+                filterChain.doFilter(request, response);
                 return;
             }
 
@@ -75,7 +81,6 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.contains(apiPrefix+"/auth/login") ||
-                path.contains(apiPrefix+"/auth/register");
+        return path.startsWith(apiPrefix + "/auth/");
     }
 }
