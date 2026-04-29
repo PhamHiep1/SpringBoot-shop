@@ -1,7 +1,9 @@
 package com.example.ShopSpring.features.order.model;
 
 
+import com.example.ShopSpring.features.order.dto.CartItemRequest;
 import com.example.ShopSpring.features.user.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -66,5 +69,10 @@ public class Order {
 
     @Column
     private Boolean active;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<OrderDetail> orderDetails;
+
 }
 

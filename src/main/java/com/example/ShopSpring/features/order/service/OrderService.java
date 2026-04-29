@@ -1,10 +1,16 @@
 package com.example.ShopSpring.features.order.service;
 
+import com.example.ShopSpring.features.order.dto.CartItemRequest;
 import com.example.ShopSpring.features.order.dto.OrderRequest;
 import com.example.ShopSpring.common.exception.DataNotFoundException;
 import com.example.ShopSpring.features.order.model.Order;
+import com.example.ShopSpring.features.order.model.OrderDetail;
 import com.example.ShopSpring.features.order.model.OrderStatus;
+import com.example.ShopSpring.features.order.repository.OrderDetailRepository;
 import com.example.ShopSpring.features.order.repository.OrderRepository;
+import com.example.ShopSpring.features.product.model.Product;
+import com.example.ShopSpring.features.product.repository.ProductRepository;
+import com.example.ShopSpring.features.product.service.ProductService;
 import com.example.ShopSpring.features.user.User;
 import com.example.ShopSpring.features.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -14,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +29,8 @@ public class OrderService implements IOrderService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
+    private final ProductRepository productRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
     @Transactional
     @Override
@@ -48,6 +57,29 @@ public class OrderService implements IOrderService {
                     "shipping date must be at least today");
         order.setActive(true);
         order.setShippingDate(shippingDate);
+
+        List< OrderDetail> orderDetails = new ArrayList<>();
+        float totalAmount = 0;
+        for(CartItemRequest cartItem: orderRequest.getCartItems()){
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            
+            Product existingProduct = productRepository
+                    .findById(cartItem.getProductId())
+                    .orElseThrow(()->
+                            new DataNotFoundException("can not find product id"));
+
+            orderDetail.setProduct(existingProduct);
+            orderDetail.setNumberOfProduct(cartItem.getQuantity());
+            orderDetail.setTotalMoney(existingProduct.getPrice() * cartItem.getQuantity());
+            orderDetail.setPrice(existingProduct.getPrice());
+
+            totalAmount += orderDetail.getTotalMoney();
+            orderDetails.add(orderDetail);
+        }
+        orderDetailRepository.saveAll(orderDetails);
+        order.setOrderDetails(orderDetails);
+        order.setTotalMoney(totalAmount);
         orderRepository.save(order);
         return order;
     }

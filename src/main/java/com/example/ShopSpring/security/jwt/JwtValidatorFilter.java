@@ -44,8 +44,6 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
             final String authHeader = request.getHeader("Authorization");
 
             if(authHeader == null || !authHeader.startsWith("Bearer ")){
-//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "...");
-//                return;
                 filterChain.doFilter(request, response);
                 return;
             }

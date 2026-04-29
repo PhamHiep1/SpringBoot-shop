@@ -1,22 +1,28 @@
-package com.example.ShopSpring.features.product;
+package com.example.ShopSpring.features.product.service;
 
+import com.example.ShopSpring.features.product.*;
 import com.example.ShopSpring.features.product.dto.ProductRequest;
 import com.example.ShopSpring.features.product.dto.ProductImageRequest;
 import com.example.ShopSpring.common.exception.DataNotFoundException;
 import com.example.ShopSpring.common.exception.InvalidParamException;
 import com.example.ShopSpring.features.category.Category;
 import com.example.ShopSpring.features.category.CategoryRepository;
+import com.example.ShopSpring.features.product.model.Product;
+import com.example.ShopSpring.features.product.model.ProductImage;
+import com.example.ShopSpring.features.product.repository.ProductImageRepository;
+import com.example.ShopSpring.features.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService implements IProductService{
+public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
@@ -59,6 +65,11 @@ public class ProductService implements IProductService{
         Page<Product> productPage = productRepository.search(keyword,categoryId,pageRequest);
 
         return productPage.map(ProductResponse::fromProduct);
+    }
+
+    @Override
+    public List<Product> findByProductIds(List<Long> productIds) {
+        return productRepository.findByProductIds(productIds);
     }
 
     @Override

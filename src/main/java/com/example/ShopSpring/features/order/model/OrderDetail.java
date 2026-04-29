@@ -1,6 +1,6 @@
 package com.example.ShopSpring.features.order.model;
 
-import com.example.ShopSpring.features.product.Product;
+import com.example.ShopSpring.features.product.model.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

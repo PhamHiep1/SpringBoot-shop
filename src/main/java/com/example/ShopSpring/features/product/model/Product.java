@@ -1,4 +1,4 @@
-package com.example.ShopSpring.features.product;
+package com.example.ShopSpring.features.product.model;
 
 import com.example.ShopSpring.common.model.BaseModel;
 import com.example.ShopSpring.features.category.Category;

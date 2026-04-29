@@ -37,5 +37,9 @@ application:
 logging:
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
+  level:
+    org:
+      springframework:
+        security=DEBUG:
 
-  #eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIwMjAyMDIyMDIiLCJpYXQiOjE3NzcxNzQ0NzgsImV4cCI6MTc3NzI2MDg3OH0.b00V8L32a9-XEtyyx6N7yWf_aBLfI8y8i59U8-kpJedZ1dLQSTYfKEe4_z_UiqNI
+#eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIwMjAyMDIyMDIiLCJpYXQiOjE3NzcxNzQ0NzgsImV4cCI6MTc3NzI2MDg3OH0.b00V8L32a9-XEtyyx6N7yWf_aBLfI8y8i59U8-kpJedZ1dLQSTYfKEe4_z_UiqNI

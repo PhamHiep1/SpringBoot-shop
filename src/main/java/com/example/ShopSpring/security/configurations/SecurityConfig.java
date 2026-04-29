@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(GET, apiPrefix + "/roles/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/categories/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/products/**").permitAll()
+                        .requestMatchers(GET, apiPrefix + "/products/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/orders/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/order_details/**").permitAll()
 
@@ -73,7 +74,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        //httpSecurityCorsConfigurer.configurationSource(source);
         return source;
     }
 }

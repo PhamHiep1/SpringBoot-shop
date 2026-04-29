@@ -2,6 +2,8 @@ package com.example.ShopSpring.features.product;
 
 
 import com.example.ShopSpring.common.dto.BaseResponse;
+import com.example.ShopSpring.features.product.model.Product;
+import com.example.ShopSpring.features.product.model.ProductImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

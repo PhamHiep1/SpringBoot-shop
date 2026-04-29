@@ -1,7 +1,11 @@
-package com.example.ShopSpring.features.product;
+package com.example.ShopSpring.features.product.controller;
 
+import com.example.ShopSpring.features.product.*;
 import com.example.ShopSpring.features.product.dto.ProductRequest;
 import com.example.ShopSpring.features.product.dto.ProductImageRequest;
+import com.example.ShopSpring.features.product.model.Product;
+import com.example.ShopSpring.features.product.model.ProductImage;
+import com.example.ShopSpring.features.product.service.ProductService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +21,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class ProductController {
                     .getProductById(productId);
             files = files == null ? new ArrayList<>() : files;
 
-            if(files.size()>ProductImage.MAXIMUM_IMAGES_PER_PRODUCT)
+            if(files.size()> ProductImage.MAXIMUM_IMAGES_PER_PRODUCT)
                 return ResponseEntity
                         .badRequest()
                         .body("you can only upload maximum 5 images");
@@ -181,7 +182,16 @@ public class ProductController {
 
     }
 
-
+    @GetMapping("/by-ids")
+    public ResponseEntity<?> getProductByIds(
+            @RequestParam("ids") String ids
+    ){
+        List<Long> productIds = Arrays.stream(ids.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        List<Product> products = productService.findByProductIds(productIds);
+        return ResponseEntity.ok(products);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(

@@ -6,8 +6,8 @@ import com.example.ShopSpring.features.order.model.Order;
 import com.example.ShopSpring.features.order.model.OrderDetail;
 import com.example.ShopSpring.features.order.repository.OrderDetailRepository;
 import com.example.ShopSpring.features.order.repository.OrderRepository;
-import com.example.ShopSpring.features.product.Product;
-import com.example.ShopSpring.features.product.ProductRepository;
+import com.example.ShopSpring.features.product.model.Product;
+import com.example.ShopSpring.features.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

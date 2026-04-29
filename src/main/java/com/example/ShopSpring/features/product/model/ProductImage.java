@@ -1,4 +1,4 @@
-package com.example.ShopSpring.features.product;
+package com.example.ShopSpring.features.product.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
