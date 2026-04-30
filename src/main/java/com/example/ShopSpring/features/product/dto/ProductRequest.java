@@ -24,6 +24,8 @@ public class ProductRequest {
     @Max(value=10000000, message="Price must be less than 10,000,000")
     private Float price;
 
+    @Min(value=0, message="Price must be greater than or equal to 0")
+    private Integer quantity;
 
     private String thumbnail;
     private String description;

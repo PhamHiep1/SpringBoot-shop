@@ -1,12 +1,34 @@
 package com.example.ShopSpring.features.user;
 
 
+import com.example.ShopSpring.common.dto.ResponseObject;
+import com.example.ShopSpring.features.user.dto.UserResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.process.internal.UserTypeResolution;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/users")
 public class UserController {
+    private final IUserService userService;
 
+    @PostMapping("/details")
+    private ResponseEntity<?> getUserDetails(
+            @RequestHeader("Authorization") String authorizationHeader
+            )
+    {
+        String token = authorizationHeader.substring(7);
+        User user = userService.getUserDetailsFromToken(token);
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .message("User details retrieved successfully")
+                        .status(HttpStatus.OK)
+                        .data(UserResponse.fromUser(user))
+                        .build()
+        );
+    }
 }

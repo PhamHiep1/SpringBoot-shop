@@ -49,10 +49,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(apiPrefix + "/auth/**").permitAll()
-
+                        .requestMatchers(apiPrefix + "/users/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/roles/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/categories/**").permitAll()
-                        .requestMatchers(GET, apiPrefix + "/products/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/products/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/orders/**").permitAll()
                         .requestMatchers(GET, apiPrefix + "/order_details/**").permitAll()

@@ -1,14 +1,18 @@
 package com.example.ShopSpring.features.order.dto;
 
 import com.example.ShopSpring.common.dto.BaseResponse;
+import com.example.ShopSpring.features.order.model.Order;
+import com.example.ShopSpring.features.order.model.OrderDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -49,7 +53,7 @@ public class OrderResponse extends BaseResponse {
     private String shippingAddress;
 
     @JsonProperty("shipping_date")
-    private Date shippingDate;
+    private LocalDate shippingDate;
 
     @JsonProperty("tracking_number")
     private String trackingNumber;
@@ -58,4 +62,27 @@ public class OrderResponse extends BaseResponse {
     private String paymentMethod;
 
     private Boolean active;
+
+    private List<OrderDetail> orderDetails;
+
+    public static OrderResponse fromOrder(Order order){
+        return OrderResponse.builder()
+                .userId(order.getUser().getId())
+                .fullName(order.getFullName())
+                .address(order.getAddress())
+                .email(order.getEmail())
+                .phoneNumber(order.getPhoneNumber())
+                .note(order.getNote())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .totalMoney(order.getTotalMoney())
+                .shippingMethod(order.getShippingMethod())
+                .shippingAddress(order.getShippingAddress())
+                .shippingDate(order.getShippingDate())
+                .trackingNumber(order.getTrackingNumber())
+                .paymentMethod(order.getPaymentMethod())
+                .active(order.getActive())
+                .orderDetails(order.getOrderDetails())
+                .build();
+    }
 }

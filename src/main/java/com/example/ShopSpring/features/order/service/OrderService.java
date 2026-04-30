@@ -69,6 +69,15 @@ public class OrderService implements IOrderService {
                     .orElseThrow(()->
                             new DataNotFoundException("can not find product id"));
 
+            // check quantity
+            if(cartItem.getQuantity() > existingProduct.getQuantity()){
+                throw new DataNotFoundException("not enough quantity");
+            }
+
+            // update quantity
+            existingProduct.setQuantity(existingProduct.getQuantity() - cartItem.getQuantity());
+            productRepository.save(existingProduct);
+
             orderDetail.setProduct(existingProduct);
             orderDetail.setNumberOfProduct(cartItem.getQuantity());
             orderDetail.setTotalMoney(existingProduct.getPrice() * cartItem.getQuantity());
@@ -80,8 +89,8 @@ public class OrderService implements IOrderService {
         orderDetailRepository.saveAll(orderDetails);
         order.setOrderDetails(orderDetails);
         order.setTotalMoney(totalAmount);
-        orderRepository.save(order);
-        return order;
+
+        return orderRepository.save(order);
     }
 
     @Override

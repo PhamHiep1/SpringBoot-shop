@@ -32,6 +32,9 @@ public class Product extends BaseModel {
     @Column(name="product_description",length = 300)
     private String description;
 
+    @Column(name="quantity")
+    private Integer quantity;
+
     @ManyToOne
     @JoinColumn (name="category_id")
     private Category category;
@@ -40,4 +43,6 @@ public class Product extends BaseModel {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
     private List<ProductImage> productImages;
+
+
 }

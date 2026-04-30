@@ -2,6 +2,7 @@ package com.example.ShopSpring.features.order.controller;
 
 
 import com.example.ShopSpring.features.order.dto.OrderRequest;
+import com.example.ShopSpring.features.order.dto.OrderResponse;
 import com.example.ShopSpring.features.order.service.OrderService;
 import com.example.ShopSpring.features.order.model.Order;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class OrderController {
             BindingResult result
             ){
         Order order = orderService.createOrder(orderRequest);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(OrderResponse.fromOrder(order));
     }
 
     @GetMapping("/{id}")

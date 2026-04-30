@@ -79,6 +79,16 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith(apiPrefix + "/auth/");
+        if(path.startsWith(apiPrefix + "/auth/"))
+            return true;
+
+        if(request.getMethod().equals("GET")){
+            if (path.startsWith(apiPrefix + "/products") ||
+                    path.startsWith(apiPrefix + "/categories") ||
+                    path.startsWith(apiPrefix + "/roles")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
