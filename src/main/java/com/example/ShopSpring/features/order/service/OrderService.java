@@ -3,6 +3,7 @@ package com.example.ShopSpring.features.order.service;
 import com.example.ShopSpring.features.order.dto.CartItemRequest;
 import com.example.ShopSpring.features.order.dto.OrderRequest;
 import com.example.ShopSpring.common.exception.DataNotFoundException;
+import com.example.ShopSpring.features.order.dto.OrderResponse;
 import com.example.ShopSpring.features.order.model.Order;
 import com.example.ShopSpring.features.order.model.OrderDetail;
 import com.example.ShopSpring.features.order.model.OrderStatus;
@@ -16,6 +17,8 @@ import com.example.ShopSpring.features.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -135,5 +138,10 @@ public class OrderService implements IOrderService {
     @Override
     public List<Order> findByUserId(Long userId){
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public Page<Order> findByKeyword(String keyword, Pageable pageable) {
+        return orderRepository.findByKeyword(keyword, pageable);
     }
 }
