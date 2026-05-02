@@ -23,5 +23,5 @@ public class AuthenticationRequest {
 
     @Min(value = 1, message = "role id is required")
     @JsonProperty("role_id")
-    private Long roleId;
+    private Long roleId ;
 }

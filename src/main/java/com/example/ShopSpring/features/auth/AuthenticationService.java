@@ -1,11 +1,14 @@
 package com.example.ShopSpring.features.auth;
 
+import com.example.ShopSpring.common.exception.ExpiredTokenException;
 import com.example.ShopSpring.features.auth.dto.AuthenticationRequest;
 import com.example.ShopSpring.features.auth.dto.AuthenticationResponse;
 import com.example.ShopSpring.features.auth.dto.RegisterRequest;
 import com.example.ShopSpring.common.exception.DataNotFoundException;
 import com.example.ShopSpring.features.role.Role;
 import com.example.ShopSpring.features.role.RoleRepository;
+import com.example.ShopSpring.features.token.Token;
+import com.example.ShopSpring.features.token.TokenRepository;
 import com.example.ShopSpring.features.user.User;
 import com.example.ShopSpring.features.user.UserRepository;
 import com.example.ShopSpring.security.jwt.JwtTokenService;
@@ -14,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +31,7 @@ public class AuthenticationService implements  IAuthenticationService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
+    private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
 
     @Override
@@ -63,26 +69,61 @@ public class AuthenticationService implements  IAuthenticationService {
         String jwtToken = jwtTokenService.generateToken(newUser);
 
         return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
+                .token(jwtToken)
                 .build();
     }
 
+    @Transactional
     @Override
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public String login(AuthenticationRequest request) {
+        Optional<User> optionalUser = userRepository.findByPhoneNumber(request.getPhoneNumber());
+        if(optionalUser.isEmpty()){
+            throw new DataNotFoundException("User not found");
+        }
+        User existingUser = optionalUser.get();
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getPhoneNumber(),
-                        request.getPassword()
-                )
+        if(existingUser.getGoogleAccountId() == 0 && existingUser.getFacebookAccountId() == 0){
+            if(!passwordEncoder.matches(request.getPassword(),existingUser.getPassword())){
+                throw new RuntimeException("Invalid password");
+            }
+        }
+
+        if(!existingUser.isEnabled()){
+            throw new RuntimeException("User is not enabled");
+        }
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                request.getPhoneNumber(),
+                null,
+                existingUser.getAuthorities()
         );
-        var user = userRepository.findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow();
-        var jwtToken = jwtTokenService.generateToken(user);
-        var refreshToken = jwtTokenService.generateRefreshToken(user);
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .build();
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtTokenService.generateToken(existingUser);
     }
+
+    @Transactional
+    @Override
+    public User getUserDetailsFromToken(String token){
+        if(jwtTokenService.isTokenExpired(token)) {
+            throw new ExpiredTokenException("Token is expired");
+        }
+        String phoneNumber = jwtTokenService.extractUsername(token);
+        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
+    @Transactional
+    @Override
+    public User getUserDetailsFromRefreshToken(String refreshToken) {
+        Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
+        return getUserDetailsFromToken(existingToken.getToken());
+    }
+
 }

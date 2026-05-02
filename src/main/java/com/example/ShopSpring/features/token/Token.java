@@ -21,7 +21,10 @@ public class Token {
     private Long id;
 
     @Column(length = 255)
-    private String token;
+    private String token;//access token
+
+    @Column(name="refresh_token")
+    private String refreshToken;
 
     @Column(name="token_type",length = 50)
     private String tokenType;
@@ -29,7 +32,13 @@ public class Token {
     @Column(name = "expiration_date",length = 150)
     private LocalDateTime expirationDate;
 
-    private Boolean revoke;
+    @Column(name = "refresh_expiration_date",length = 150)
+    private LocalDateTime refreshExpirationDate;
+
+    @Column(name = "is_mobile", columnDefinition = "TINYINT(1)")
+    private boolean isMobile;
+
+    private Boolean revoked;
     private Boolean expired;
 
     @ManyToOne

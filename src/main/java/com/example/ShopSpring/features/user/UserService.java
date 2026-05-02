@@ -15,20 +15,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
-    private final JwtTokenService jwtTokenService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    @Transactional
-    @Override
-    public User getUserDetailsFromToken(String token) {
-        if(jwtTokenService.isTokenExpired(token)){
-            throw new ExpiredTokenException("Token is expired");
-        }
-        String phoneNumber = jwtTokenService.extractUsername(token);
-        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
-        return user.orElseThrow();
-    }
 
     @Transactional
     @Override
@@ -64,7 +52,6 @@ public class UserService implements IUserService {
         if(updateUserRequest.getPassword() != null &&
                 !updateUserRequest.getPassword().isEmpty()
         ){
-
             String encodedPassword = passwordEncoder.encode(updateUserRequest.getPassword());
             existingUser.setPassword(encodedPassword);
         }

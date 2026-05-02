@@ -39,10 +39,6 @@ public class JwtTokenService {
         return buildToken(claims, user, jwtExpiration);
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
-    }
-
 
 
     public boolean validateToken(String token, User userDetails) {

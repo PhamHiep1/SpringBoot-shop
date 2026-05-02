@@ -2,6 +2,7 @@ package com.example.ShopSpring.features.user;
 
 
 import com.example.ShopSpring.common.dto.ResponseObject;
+import com.example.ShopSpring.features.auth.IAuthenticationService;
 import com.example.ShopSpring.features.user.dto.UpdateUserRequest;
 import com.example.ShopSpring.features.user.dto.UserResponse;
 import com.example.ShopSpring.security.jwt.JwtTokenService;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api.prefix}/users")
 public class UserController {
     private final IUserService userService;
-    private final JwtTokenService jwtTokenService;
+    private final IAuthenticationService authenticationService;
 
     @PostMapping("/details")
     private ResponseEntity<?> getUserDetails(
@@ -25,7 +26,7 @@ public class UserController {
             )
     {
         String token = authorizationHeader.substring(7);
-        User user = userService.getUserDetailsFromToken(token);
+        User user = authenticationService.getUserDetailsFromToken(token);
         return ResponseEntity.ok(
                 ResponseObject.builder()
                         .message("User details retrieved successfully")
@@ -42,7 +43,7 @@ public class UserController {
         @RequestHeader("Authorization") String authorizationHeader
     ){
         String token = authorizationHeader.substring(7);
-        User user = userService.getUserDetailsFromToken(token);
+        User user = authenticationService.getUserDetailsFromToken(token);
 
         if(user.getId() != userId){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
