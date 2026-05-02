@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthenticationRequest {
+public class LoginRequest {
     @JsonProperty("phone_number")
-    @NotBlank(message = "phone number is required")
     private String phoneNumber;
+
+    private String email;
 
     @NotBlank(message = "password is required")
     private String password;

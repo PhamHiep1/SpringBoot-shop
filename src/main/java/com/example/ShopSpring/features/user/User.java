@@ -30,8 +30,11 @@ public class User extends BaseModel implements UserDetails {
     @Column(name="full_name",length = 100)
     private String fullName;
 
-    @Column(name= "phone_number",length = 10, nullable = false)
+    @Column(name= "phone_number",length = 10)
     private String phoneNumber;
+
+    @Column(name ="email", length = 100, unique = true)
+    private String email;
 
     @Column(length = 200)
     private String address;

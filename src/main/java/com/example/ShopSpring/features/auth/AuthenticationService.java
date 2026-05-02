@@ -1,8 +1,7 @@
 package com.example.ShopSpring.features.auth;
 
 import com.example.ShopSpring.common.exception.ExpiredTokenException;
-import com.example.ShopSpring.features.auth.dto.AuthenticationRequest;
-import com.example.ShopSpring.features.auth.dto.AuthenticationResponse;
+import com.example.ShopSpring.features.auth.dto.LoginRequest;
 import com.example.ShopSpring.features.auth.dto.RegisterRequest;
 import com.example.ShopSpring.common.exception.DataNotFoundException;
 import com.example.ShopSpring.features.role.Role;
@@ -36,20 +35,24 @@ public class AuthenticationService implements  IAuthenticationService {
 
     @Override
     @Transactional
-    public AuthenticationResponse register(RegisterRequest registerRequest) throws RuntimeException{
+    public User register(RegisterRequest registerRequest) throws RuntimeException{
         String phoneNumber = registerRequest.getPhoneNumber();
-        if(userRepository.existsByPhoneNumber(phoneNumber))
+        String email = registerRequest.getEmail();
+        if(!email.isBlank() && userRepository.existsByEmail(email))
+            throw new DataIntegrityViolationException("email already exists");
+        if(!phoneNumber.isBlank() && userRepository.existsByPhoneNumber(phoneNumber))
             throw new DataIntegrityViolationException("phone number already exists");
 
         Role role = roleRepository.findById(registerRequest.getRoleId())
                 .orElseThrow(()-> new DataNotFoundException("role not found"));
 
         if(role.getName().toUpperCase().equals(Role.ADMIN)) {
-            throw new RuntimeException("Không được phép đăng ký tài khoản Admin");
+            throw new RuntimeException("not allowed to register admin");
         }
 
         User newUser = User.builder()
                 .phoneNumber(phoneNumber)
+                .email(email)
                 .dateOfBirth(registerRequest.getDateOfBirth())
                 .address(registerRequest.getAddress())
                 .fullName(registerRequest.getFullName())
@@ -65,18 +68,23 @@ public class AuthenticationService implements  IAuthenticationService {
             newUser.setPassword(encodePasword);
         }
 
-        userRepository.save(newUser);
-        String jwtToken = jwtTokenService.generateToken(newUser);
-
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return userRepository.save(newUser);
     }
 
     @Transactional
     @Override
-    public String login(AuthenticationRequest request) {
-        Optional<User> optionalUser = userRepository.findByPhoneNumber(request.getPhoneNumber());
+    public String login(LoginRequest request) {
+        Optional<User> optionalUser = Optional.empty();
+        String subject = null;
+        if(null != request.getPhoneNumber() && !request.getPhoneNumber().isBlank()){
+            optionalUser = userRepository.findByPhoneNumber(request.getPhoneNumber());
+            subject = request.getPhoneNumber();
+        }
+        if(optionalUser.isEmpty() && null != request.getEmail()) {
+            optionalUser = userRepository.findByEmail(request.getEmail());
+            subject = request.getEmail();
+        }
+
         if(optionalUser.isEmpty()){
             throw new DataNotFoundException("User not found");
         }
@@ -88,8 +96,8 @@ public class AuthenticationService implements  IAuthenticationService {
             }
         }
 
-        if(!existingUser.isEnabled()){
-            throw new RuntimeException("User is not enabled");
+        if(!existingUser.getActive()){
+            throw new RuntimeException("User is not active");
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.process.internal.UserTypeResolution;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class UserController {
     private final IAuthenticationService authenticationService;
 
     @PostMapping("/details")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     private ResponseEntity<?> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
             )
@@ -37,6 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/details/{user_id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     private ResponseEntity<?> updateUserDetails(
         @PathVariable("user_id") Long userId,
         @Valid @RequestBody UpdateUserRequest updateUserRequest,

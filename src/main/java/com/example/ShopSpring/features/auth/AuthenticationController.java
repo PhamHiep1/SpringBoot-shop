@@ -1,18 +1,17 @@
 package com.example.ShopSpring.features.auth;
 
 import com.example.ShopSpring.common.dto.ResponseObject;
-import com.example.ShopSpring.features.auth.dto.AuthenticationResponse;
+import com.example.ShopSpring.features.auth.dto.LoginResponse;
 import com.example.ShopSpring.features.auth.dto.RegisterRequest;
-import com.example.ShopSpring.features.auth.dto.AuthenticationRequest;
+import com.example.ShopSpring.features.auth.dto.LoginRequest;
+import com.example.ShopSpring.features.auth.dto.RegisterResponse;
 import com.example.ShopSpring.features.token.ITokenService;
 import com.example.ShopSpring.features.token.RefreshTokenRequest;
 import com.example.ShopSpring.features.token.Token;
-import com.example.ShopSpring.features.user.IUserService;
 import com.example.ShopSpring.features.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.example.ShopSpring.common.util.ValidationUtil;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/auth")
@@ -32,25 +31,56 @@ public class AuthenticationController {
     public ResponseEntity<?> register(
             @Valid @RequestBody RegisterRequest registerRequest
     ){
-        return ResponseEntity.ok(authenticationService.register(registerRequest));
+        if(registerRequest.getEmail() == null || registerRequest.getEmail().trim().isBlank()){
+            if(registerRequest.getPhoneNumber() == null || registerRequest.getPhoneNumber().isBlank()){
+                return ResponseEntity.badRequest().body(ResponseObject.builder()
+                        .message("Email or phone number is required")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build());
+            }
+            else{
+                if(!ValidationUtil.isValidPhoneNumber(registerRequest.getPhoneNumber())){
+                    throw new RuntimeException("invalid phone number");
+                }
+            }
+        }
+        else{
+            if(!ValidationUtil.isValidEmail(registerRequest.getEmail())){
+                throw new RuntimeException("invalid email");
+            }
+        }
+
+        if(!registerRequest.getPassword().equals(registerRequest.getRetypePassword())){
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Password does not match")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build());
+        }
+
+        User user = authenticationService.register(registerRequest);
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.CREATED)
+                .data(RegisterResponse.fromUser(user))
+                .message("register successfully")
+                .build());
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @Valid @RequestBody AuthenticationRequest authenticationRequest,
+            @Valid @RequestBody LoginRequest loginRequest,
             HttpServletRequest request
     ){
-        authenticationRequest.setRoleId(
-                authenticationRequest.getRoleId()==null ? 1L : authenticationRequest.getRoleId()
+        loginRequest.setRoleId(
+                loginRequest.getRoleId()==null ? 1L : loginRequest.getRoleId()
         );
 
-        String token =  authenticationService.login(authenticationRequest);
+        String token =  authenticationService.login(loginRequest);
 
         String userAgent = request.getHeader("User-Agent");
         User userDetail = authenticationService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token, userAgent.contains("Mobile"));
 
-        AuthenticationResponse response = AuthenticationResponse.builder()
+        LoginResponse response = LoginResponse.builder()
                 .message("Login successfully")
                 .token(jwtToken.getToken())
                 .tokenType(jwtToken.getTokenType())
@@ -62,7 +92,7 @@ public class AuthenticationController {
                 .build();
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Login successfully")
+                .message(response.getMessage())
                 .data(response)
                 .status(HttpStatus.OK)
                 .build());
@@ -76,7 +106,7 @@ public class AuthenticationController {
                 refreshTokenRequest.getRefreshToken());
         Token jwtToken = tokenService.refreshToken(refreshTokenRequest.getRefreshToken(),userDetail);
 
-        AuthenticationResponse loginResponse = AuthenticationResponse.builder()
+        LoginResponse loginResponse = LoginResponse.builder()
                 .message("Refresh token successfully")
                 .token(jwtToken.getToken())
                 .tokenType(jwtToken.getTokenType())

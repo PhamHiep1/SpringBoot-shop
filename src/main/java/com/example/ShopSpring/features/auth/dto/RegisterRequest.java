@@ -20,8 +20,10 @@ public class RegisterRequest {
     private String fullName;
 
     @JsonProperty("phone_number")
-    @NotBlank(message = "phone number is required")
     private String phoneNumber;
+
+    @JsonProperty("email")
+    private String email;
 
     private String address;
 

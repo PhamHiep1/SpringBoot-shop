@@ -1,5 +1,6 @@
 package com.example.ShopSpring.security.configurations;
 
+import com.example.ShopSpring.features.user.User;
 import com.example.ShopSpring.features.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,15 +17,27 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 
+import java.util.Optional;
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return phoneNumber -> repository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return subject  -> {
+            Optional<User> userByPhoneNumber = userRepository.findByPhoneNumber(subject);
+            if(userByPhoneNumber.isPresent()){
+                return userByPhoneNumber.get();
+            }
+
+            Optional<User> userByEmail = userRepository.findByEmail(subject);
+            if(userByEmail.isPresent()){
+                return userByEmail.get();
+            }
+            throw new UsernameNotFoundException("User not found");
+        };
     }
 
     @Bean

@@ -28,6 +28,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> createOrder(
             @Valid @RequestBody OrderRequest orderRequest,
             BindingResult result
@@ -53,6 +54,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateOrder(
             @Valid @PathVariable Long id,
             @RequestBody OrderRequest orderRequest
@@ -62,12 +64,12 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteOrder(@Valid @PathVariable Long id){
         orderService.deleteOrder(id);
         return ResponseEntity.ok("update successfully order "+id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-orders-by-keyword")
     public ResponseEntity<?> getOrdersByKeyword(
             @Valid @RequestParam(defaultValue = "") String keyword,
