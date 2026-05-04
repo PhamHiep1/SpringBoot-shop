@@ -37,4 +37,24 @@ A comprehensive E-commerce backend system designed and developed to manage produ
   * Product management with pagination, filtering, and detail retrieval.
   * Order creation, update, and soft-delete capabilities.
   * Multi-part image uploading and processing.
+
+---
   
+##  Testing APIs via Postman
+You can test the core operations of the system using Postman. Below are the endpoints with examples of how to send the data.
+**1. Register User
+* Method: POST
+* URL: http://localhost:8080/api/v1/auth/register
+* Body (JSON):
+```json
+{
+    "full_name":"pth",
+    "email":"dd4321@gmail.com",
+    "phone_number": "0999999999",
+    "address": "ngo b",
+    "password":"12345789",
+    "retype_password":"12345789",
+    "date_of_birth":"1990-01-01",
+    "facebook_account_id":0,
+    "google_account_id":0
+}
