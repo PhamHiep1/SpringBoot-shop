@@ -41,11 +41,13 @@ A comprehensive E-commerce backend system designed and developed to manage produ
 ---
   
 ##  Testing APIs via Postman
-You can test the core operations of the system using Postman. Below are the endpoints with examples of how to send the data.
-### 1. Register User
+### Core APIs
+Below are the primary endpoints. The full Postman collection is available in the repository (or can be imported).
+### 1. Authentication
+### Register User
 * **Method:** `POST`
 * **URL:** `http://localhost:8080/api/v1/auth/register`
-* **Body (JSON):**
+* **Request:**
 ```json
 {
     "full_name":"pth",
@@ -57,4 +59,51 @@ You can test the core operations of the system using Postman. Below are the endp
     "date_of_birth":"1990-01-01",
     "facebook_account_id":0,
     "google_account_id":0
+}
+* **Success Response:**
+```json
+{
+    "message": "register successfully",
+    "status": "201 CREATED",
+    "data": {
+        "id": 17,
+        "full_name": "pth",
+        "phone_number": "0999999999",
+        "address": "ngo b",
+        "is_active": true,
+        "date_of_birth": "1990-01-01T00:00:00.000Z",
+        "facebook_account_id": 0,
+        "google_account_id": 0,
+        "role": {
+            "id": 1,
+            "name": "user"
+        }
+    }
+}
+
+### login User
+* **Method:** `POST`
+* **URL:** `http://localhost:8080/api/v1/auth/login`
+* **Request:**
+```json
+{
+    "phone_or_email":"dd4321@gmail.com",
+    "password":"123456789"
+}
+* **Success Response:**
+```json
+{
+    "message": "Login successfully",
+    "status": "200 OK",
+    "data": {
+        "message": "Login successfully",
+        "token": "eyJhbGciOiJIUzM4NCJ9.eyJwaG9uZU51bWJlciI6IjAxMTExMTExMTEiLCJ1c2VySWQiOjE2LCJzdWIiOiIwMTExMTExMTExIiwiaWF0IjoxNzc3ODY1MjEzLCJleHAiOjE3Nzc5NTE2MTN9.9WUYUln8G4-nytYLo0BR9OnatP4cH-H_bPFALfWc-wAo8WhTll1U3IVLm9Ar0YCO",
+        "refresh_token": "93ab6557-5e05-41de-90ce-02a4f19e8ffb",
+        "tokenType": "Bearer",
+        "id": 16,
+        "username": "0977777777",
+        "roles": [
+            "ROLE_USER"
+        ]
+    }
 }
