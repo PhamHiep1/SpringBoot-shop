@@ -43,7 +43,7 @@ A comprehensive E-commerce backend system designed and developed to manage produ
 ##  Testing APIs via Postman
 ### Core APIs
 Below are the primary endpoints. The full Postman collection is available in the repository (or can be imported).
-### 1. Authentication
+### 1. Authentication & User
 ### Register User
 * **Method:** `POST`
 * **URL:** `http://localhost:8080/api/v1/auth/register`
@@ -70,6 +70,7 @@ Below are the primary endpoints. The full Postman collection is available in the
         "id": 17,
         "full_name": "pth",
         "phone_number": "0999999999",
+        "email":"dd4321@gmail.com",
         "address": "ngo b",
         "is_active": true,
         "date_of_birth": "1990-01-01T00:00:00.000Z",
