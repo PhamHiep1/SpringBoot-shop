@@ -60,6 +60,7 @@ Below are the primary endpoints. The full Postman collection is available in the
     "facebook_account_id":0,
     "google_account_id":0
 }
+```
 * **Success Response:**
 ```json
 {
@@ -80,7 +81,7 @@ Below are the primary endpoints. The full Postman collection is available in the
         }
     }
 }
-
+```
 ### login User
 * **Method:** `POST`
 * **URL:** `http://localhost:8080/api/v1/auth/login`
@@ -90,6 +91,7 @@ Below are the primary endpoints. The full Postman collection is available in the
     "phone_or_email":"dd4321@gmail.com",
     "password":"123456789"
 }
+```
 * **Success Response:**
 ```json
 {
@@ -107,3 +109,4 @@ Below are the primary endpoints. The full Postman collection is available in the
         ]
     }
 }
+```
