@@ -42,10 +42,10 @@ A comprehensive E-commerce backend system designed and developed to manage produ
   
 ##  Testing APIs via Postman
 You can test the core operations of the system using Postman. Below are the endpoints with examples of how to send the data.
-**1. Register User
-* Method: POST
-* URL: http://localhost:8080/api/v1/auth/register
-* Body (JSON):
+### 1. Register User
+* **Method:** `POST`
+* **URL:** `http://localhost:8080/api/v1/auth/register`
+* **Body (JSON):**
 ```json
 {
     "full_name":"pth",
