@@ -31,6 +31,7 @@ public class AuthenticationController {
     public ResponseEntity<?> register(
             @Valid @RequestBody RegisterRequest registerRequest
     ){
+        registerRequest.setRoleId(1L);
         if(registerRequest.getEmail() == null || registerRequest.getEmail().trim().isBlank()){
             if(registerRequest.getPhoneNumber() == null || registerRequest.getPhoneNumber().isBlank()){
                 return ResponseEntity.badRequest().body(ResponseObject.builder()

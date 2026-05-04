@@ -16,7 +16,7 @@ public class ValidationUtil {
         String phoneRegex = "^[0-9]{10,11}$";
         Pattern pattern = Pattern.compile(phoneRegex);
 
-        return phoneNumber!= null && pattern.matcher(phoneRegex).matches();
+        return phoneNumber!= null && pattern.matcher(phoneNumber).matches();
     }
 
     public static boolean isValidPassword(String password){

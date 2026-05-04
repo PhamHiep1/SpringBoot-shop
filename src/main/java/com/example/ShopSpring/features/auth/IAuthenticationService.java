@@ -7,7 +7,7 @@ import com.example.ShopSpring.features.user.User;
 public interface IAuthenticationService {
     String login(LoginRequest loginRequest) throws RuntimeException;
     User register(RegisterRequest registerRequest);
-    public User getUserDetailsFromRefreshToken(String refreshToken);
-    public User getUserDetailsFromToken(String token) ;
+    User getUserDetailsFromRefreshToken(String refreshToken);
+    User getUserDetailsFromToken(String token) ;
 
 }

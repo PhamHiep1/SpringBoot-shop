@@ -70,7 +70,7 @@ public class OrderController {
         return ResponseEntity.ok("update successfully order "+id);
     }
 
-    @GetMapping("/get-orders-by-keyword")
+    @GetMapping("/by-keyword")
     public ResponseEntity<?> getOrdersByKeyword(
             @Valid @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,

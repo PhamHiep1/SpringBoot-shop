@@ -14,10 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class LoginRequest {
-    @JsonProperty("phone_number")
-    private String phoneNumber;
-
-    private String email;
+    @JsonProperty("phone_or_email")
+    private String phoneOrEmail;
 
     @NotBlank(message = "password is required")
     private String password;

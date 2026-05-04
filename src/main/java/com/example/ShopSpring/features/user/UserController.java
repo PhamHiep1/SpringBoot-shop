@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping("/details")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    private ResponseEntity<?> getUserDetails(
+    public ResponseEntity<?> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
             )
     {
@@ -40,7 +40,7 @@ public class UserController {
 
     @PutMapping("/details/{user_id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    private ResponseEntity<?> updateUserDetails(
+    public ResponseEntity<?> updateUserDetails(
         @PathVariable("user_id") Long userId,
         @Valid @RequestBody UpdateUserRequest updateUserRequest,
         @RequestHeader("Authorization") String authorizationHeader

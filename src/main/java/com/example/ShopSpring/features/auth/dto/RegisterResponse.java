@@ -22,6 +22,9 @@ public class RegisterResponse {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
+    @JsonProperty("email")
+    private String email;
+
     @JsonProperty("address")
     private String address;
 
@@ -45,6 +48,7 @@ public class RegisterResponse {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
                 .address(user.getAddress())
                 .active(user.getActive())
                 .dateOfBirth(user.getDateOfBirth())

@@ -40,6 +40,4 @@ logging:
   level:
     org:
       springframework:
-        security=DEBUG:
-
-#eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIwMjAyMDIyMDIiLCJpYXQiOjE3NzcxNzQ0NzgsImV4cCI6MTc3NzI2MDg3OH0.b00V8L32a9-XEtyyx6N7yWf_aBLfI8y8i59U8-kpJedZ1dLQSTYfKEe4_z_UiqNI
+        security: DEBUG

@@ -19,10 +19,11 @@ public class RegisterRequest {
     @JsonProperty("full_name")
     private String fullName;
 
+    @NotBlank(message = "phone number is required")
     @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @JsonProperty("email")
+    @NotBlank(message = "email is required")
     private String email;
 
     private String address;
@@ -45,6 +46,5 @@ public class RegisterRequest {
 
 
     @JsonProperty("role_id")
-    @NotNull(message="Role id is required")
     private Long roleId;
 }

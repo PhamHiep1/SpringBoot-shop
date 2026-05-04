@@ -70,19 +70,16 @@ public class AuthenticationService implements  IAuthenticationService {
 
         return userRepository.save(newUser);
     }
-
     @Transactional
     @Override
     public String login(LoginRequest request) {
         Optional<User> optionalUser = Optional.empty();
-        String subject = null;
-        if(null != request.getPhoneNumber() && !request.getPhoneNumber().isBlank()){
-            optionalUser = userRepository.findByPhoneNumber(request.getPhoneNumber());
-            subject = request.getPhoneNumber();
+
+        if(null != request.getPhoneOrEmail() && !request.getPhoneOrEmail().isBlank()){
+            optionalUser = userRepository.findByPhoneNumber(request.getPhoneOrEmail());
         }
-        if(optionalUser.isEmpty() && null != request.getEmail()) {
-            optionalUser = userRepository.findByEmail(request.getEmail());
-            subject = request.getEmail();
+        if(optionalUser.isEmpty()){
+            optionalUser = userRepository.findByEmail(request.getPhoneOrEmail());
         }
 
         if(optionalUser.isEmpty()){
@@ -101,7 +98,7 @@ public class AuthenticationService implements  IAuthenticationService {
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                request.getPhoneNumber(),
+                request.getPhoneOrEmail(),
                 null,
                 existingUser.getAuthorities()
         );

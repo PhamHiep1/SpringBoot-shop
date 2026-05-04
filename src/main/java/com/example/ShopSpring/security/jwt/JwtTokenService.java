@@ -44,7 +44,7 @@ public class JwtTokenService {
     public boolean validateToken(String token, User userDetails) {
         String phoneNumber = extractUsername(token);
         return (phoneNumber.equals(userDetails.getPhoneNumber())) &&
-                isTokenExpired(token);
+                !isTokenExpired(token);
     }
 
 

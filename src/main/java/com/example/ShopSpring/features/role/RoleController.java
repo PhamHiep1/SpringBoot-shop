@@ -17,6 +17,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class RoleController {
     private final RoleService roleService;
+
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllRoles() {
         List<Role> roles = roleService.getAllRoles();
