@@ -1,4 +1,4 @@
-package com.example.ShopSpring.features.product;
+package com.example.ShopSpring.features.product.dto;
 
 
 import com.example.ShopSpring.common.dto.BaseResponse;

@@ -1,6 +1,7 @@
 package com.example.ShopSpring.features.auth;
 
 import com.example.ShopSpring.common.exception.ExpiredTokenException;
+import com.example.ShopSpring.common.service.IEmailService;
 import com.example.ShopSpring.features.auth.dto.LoginRequest;
 import com.example.ShopSpring.features.auth.dto.RegisterRequest;
 import com.example.ShopSpring.common.exception.DataNotFoundException;
@@ -10,6 +11,7 @@ import com.example.ShopSpring.features.token.Token;
 import com.example.ShopSpring.features.token.TokenRepository;
 import com.example.ShopSpring.features.user.User;
 import com.example.ShopSpring.features.user.UserRepository;
+import com.example.ShopSpring.security.jwt.IJwtTokenService;
 import com.example.ShopSpring.security.jwt.JwtTokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +31,10 @@ public class AuthenticationService implements  IAuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenService jwtTokenService;
+    private final IJwtTokenService jwtTokenService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
+    private final IEmailService emailService;
 
     @Override
     @Transactional
@@ -68,6 +71,9 @@ public class AuthenticationService implements  IAuthenticationService {
             newUser.setPassword(encodePasword);
         }
 
+        String subject = "Welcome to ShopApp!";
+        String body = "Hi " + registerRequest.getFullName() + ", thank you for registering with us. We are glad to have you!";
+        emailService.sendEmailAsync(registerRequest.getEmail(), subject, body);
         return userRepository.save(newUser);
     }
     @Transactional
@@ -103,8 +109,12 @@ public class AuthenticationService implements  IAuthenticationService {
                 existingUser.getAuthorities()
         );
 
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String subject = "Welcome back to ShopApp!";
+        String body = "Have a nice day!";
+        emailService.sendEmailAsync(existingUser.getEmail(), subject, body);
+
         return jwtTokenService.generateToken(existingUser);
     }
 

@@ -1,8 +1,9 @@
 package com.example.ShopSpring.features.product.controller;
 
-import com.example.ShopSpring.features.product.*;
+import com.example.ShopSpring.features.product.dto.ProductListResponse;
 import com.example.ShopSpring.features.product.dto.ProductRequest;
 import com.example.ShopSpring.features.product.dto.ProductImageRequest;
+import com.example.ShopSpring.features.product.dto.ProductResponse;
 import com.example.ShopSpring.features.product.model.Product;
 import com.example.ShopSpring.features.product.model.ProductImage;
 import com.example.ShopSpring.features.product.service.ProductService;

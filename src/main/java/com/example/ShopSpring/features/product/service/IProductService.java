@@ -2,7 +2,7 @@ package com.example.ShopSpring.features.product.service;
 
 import com.example.ShopSpring.features.product.model.Product;
 import com.example.ShopSpring.features.product.model.ProductImage;
-import com.example.ShopSpring.features.product.ProductResponse;
+import com.example.ShopSpring.features.product.dto.ProductResponse;
 import com.example.ShopSpring.features.product.dto.ProductRequest;
 import com.example.ShopSpring.features.product.dto.ProductImageRequest;
 import org.springframework.data.domain.Page;

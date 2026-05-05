@@ -27,16 +27,15 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return subject  -> {
-            Optional<User> userByPhoneNumber = userRepository.findByPhoneNumber(subject);
-            if(userByPhoneNumber.isPresent()){
-                return userByPhoneNumber.get();
+            if (subject.contains("@")) {
+                return userRepository.findByEmail(subject)
+                        .orElseThrow(() -> new UsernameNotFoundException(
+                                "User not found with email: " + subject));
             }
 
-            Optional<User> userByEmail = userRepository.findByEmail(subject);
-            if(userByEmail.isPresent()){
-                return userByEmail.get();
-            }
-            throw new UsernameNotFoundException("User not found");
+            return userRepository.findByPhoneNumber(subject)
+                    .orElseThrow(() -> new UsernameNotFoundException(
+                            "User not found with phone: " + subject));
         };
     }
 

@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
-public class JwtTokenService {
+public class JwtTokenService implements IJwtTokenService{
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
