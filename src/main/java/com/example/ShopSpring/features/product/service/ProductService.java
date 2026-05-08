@@ -30,8 +30,7 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public Product createProduct(ProductRequest productRequest)
-            throws DataNotFoundException {
+    public Product createProduct(ProductRequest productRequest) {
         Category existingCategory =  categoryRepository
                 .findById(productRequest.getCategoryId())
                 .orElseThrow(
@@ -109,6 +108,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductImage createProductImage(
             Long productId, ProductImageRequest productImageRequest)
             throws RuntimeException {

@@ -38,7 +38,7 @@ public class AuthenticationService implements  IAuthenticationService {
 
     @Override
     @Transactional
-    public User register(RegisterRequest registerRequest) throws RuntimeException{
+    public User register(RegisterRequest registerRequest) {
         String phoneNumber = registerRequest.getPhoneNumber();
         String email = registerRequest.getEmail();
         if(!email.isBlank() && userRepository.existsByEmail(email))

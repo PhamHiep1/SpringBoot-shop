@@ -6,10 +6,14 @@ import com.example.ShopSpring.features.product.dto.ProductImageRequest;
 import com.example.ShopSpring.features.product.dto.ProductResponse;
 import com.example.ShopSpring.features.product.model.Product;
 import com.example.ShopSpring.features.product.model.ProductImage;
+import com.example.ShopSpring.features.product.service.IProductRedisService;
+import com.example.ShopSpring.features.product.service.IProductService;
 import com.example.ShopSpring.features.product.service.ProductService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +38,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/products")
 public class ProductController {
-    private final ProductService productService;
+    private final IProductService productService;
+    private final IProductRedisService productRedisService;
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -121,6 +126,7 @@ public class ProductController {
         Files.copy(file.getInputStream(),destination,StandardCopyOption.REPLACE_EXISTING);
         return uniqueName;
     }
+
     //@PostMapping("/generateFakeProducts")
     private ResponseEntity<?> generateFakeProducts(){
         Faker faker = new Faker();
@@ -158,22 +164,30 @@ public class ProductController {
             @RequestParam(value = "keyword", defaultValue = "") String keyword,
             @RequestParam(value = "category_id", defaultValue = "0") Long categoryId
     ){
+        //productRedisService.clear();
+        int totalPages = 0;
         PageRequest pageRequest = PageRequest.of(
                 page,limit,
                 //Sort.by("createdAt").descending());
                 Sort.by("id").ascending());
 
-        Page<ProductResponse> productPage = productService
+        List<ProductResponse> productResponses = productRedisService
                 .getAllProducts(keyword,categoryId,pageRequest);
 
-        int totalPages = productPage.getTotalPages();
-        List<ProductResponse> products = productPage.getContent();
+        if(productResponses == null) {
+            Page<ProductResponse> productPage = productService
+                    .getAllProducts(keyword, categoryId, pageRequest);
+            totalPages = productPage.getTotalPages();
+            productResponses = productPage.getContent();
 
+            productRedisService.saveAllProducts(productResponses,keyword,categoryId,pageRequest);
+        }
         return ResponseEntity.ok(ProductListResponse
                 .builder()
-                .products(products)
+                .products(productResponses)
                 .totalPages(totalPages)
                 .build());
+
     }
 
     @GetMapping("/{id}")
