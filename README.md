@@ -15,8 +15,8 @@ A comprehensive E-commerce backend system designed and developed to manage produ
 * **Testing:** Postman
 
 ### **Frontend Integration:**
-* **Framework:** Angular 
-
+* **Framework:** Angular
+  https://github.com/PhamHiep1/Shop-Frontend
 ---
 
 ## 👥 Team & Role
@@ -39,7 +39,7 @@ A comprehensive E-commerce backend system designed and developed to manage produ
   * Multi-part image uploading and processing.
 
 ---
-  
+
 ##  Testing APIs via Postman
 ### Core APIs
 Below are the primary endpoints. The full Postman collection is available in the repository (or can be imported).
@@ -148,7 +148,7 @@ Below are the primary endpoints. The full Postman collection is available in the
             "id": 2,
             "name": "Practical Copper Computer",
             "price": 29.4,
-            "thumbnail": "eb9e275e-7c3a-4e3a-885a-80f4a154eecf phong-cach-thoi-trang-nam.jpg",
+            "thumbnail": "eb9e275e-7c3a-4e3a-885a-80f4a154eecf wp12024619.jpg",
             "description": "Voluptatum rem est non dolores rerum.",
             "quantity": 36,
             "category_id": 2,
@@ -204,5 +204,4 @@ Below are the primary endpoints. The full Postman collection is available in the
     }
 ]
 ```
-
 
