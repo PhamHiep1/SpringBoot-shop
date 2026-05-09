@@ -171,22 +171,20 @@ public class ProductController {
                 //Sort.by("createdAt").descending());
                 Sort.by("id").ascending());
 
-        List<ProductResponse> productResponses = productRedisService
+        ProductListResponse productResponses = productRedisService
                 .getAllProducts(keyword,categoryId,pageRequest);
 
         if(productResponses == null) {
+            productResponses = new ProductListResponse();
             Page<ProductResponse> productPage = productService
                     .getAllProducts(keyword, categoryId, pageRequest);
             totalPages = productPage.getTotalPages();
-            productResponses = productPage.getContent();
+            productResponses.setProducts(productPage.getContent());
+            productResponses.setTotalPages(totalPages);
 
             productRedisService.saveAllProducts(productResponses,keyword,categoryId,pageRequest);
         }
-        return ResponseEntity.ok(ProductListResponse
-                .builder()
-                .products(productResponses)
-                .totalPages(totalPages)
-                .build());
+        return ResponseEntity.ok(productResponses);
 
     }
 

@@ -45,6 +45,4 @@ public class Product extends BaseModel {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
     private List<ProductImage> productImages;
-
-
 }

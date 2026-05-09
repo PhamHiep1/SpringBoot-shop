@@ -1,5 +1,6 @@
 package com.example.ShopSpring.features.product.service;
 
+import com.example.ShopSpring.features.product.dto.ProductListResponse;
 import com.example.ShopSpring.features.product.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +33,7 @@ public class ProductRedisService implements IProductRedisService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts(
+    public ProductListResponse getAllProducts(
             String keyword, Long categoryId, PageRequest pageRequest
     ) throws JacksonException {
         String key = getKeyFrom(keyword, categoryId, pageRequest);
@@ -40,7 +41,7 @@ public class ProductRedisService implements IProductRedisService {
 
         return json != null ? redisObjectMapper.readValue(
                 json,
-                new TypeReference<List<ProductResponse>>() {}
+                new TypeReference<ProductListResponse>() {}
         ):null;
     }
 
@@ -48,11 +49,11 @@ public class ProductRedisService implements IProductRedisService {
 
     @Override
     public void saveAllProducts(
-            List<ProductResponse> productResponseList,
+            ProductListResponse productListResponse,
             String keyword, Long categoryId,
             PageRequest pageRequest) {
         String key = getKeyFrom(keyword,categoryId,pageRequest);
-        String json = redisObjectMapper.writeValueAsString(productResponseList);
+        String json = redisObjectMapper.writeValueAsString(productListResponse);
         redisTemplate.opsForValue().set(key, json );
     }
 

@@ -28,7 +28,9 @@ public class ProductResponse extends BaseResponse {
     @JsonProperty("category_id")
     private Long categoryId;
 
+
     private List<ProductImage> images = new ArrayList<>();
+
 
     public static ProductResponse fromProduct(Product product){
         ProductResponse productResponse =
