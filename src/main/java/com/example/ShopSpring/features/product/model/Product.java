@@ -23,7 +23,7 @@ public class Product extends BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="product_name",nullable = false, length = 350)
+    @Column(name="name",nullable = false, length = 350)
     private String name;
 
     private Float price;
@@ -31,7 +31,7 @@ public class Product extends BaseModel {
     @Column(name="thumbnail",length = 300)
     private String thumbnail;
 
-    @Column(name="product_description",length = 300)
+    @Column(name="description",length = 300)
     private String description;
 
     @Column(name="quantity")

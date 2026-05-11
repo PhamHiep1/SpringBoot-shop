@@ -33,7 +33,7 @@ public class User extends BaseModel implements UserDetails {
     @Column(name= "phone_number",length = 10)
     private String phoneNumber;
 
-    @Column(name ="email", length = 100, unique = true)
+    @Column(name ="email", length = 250, unique = true)
     private String email;
 
     @Column(length = 200)
