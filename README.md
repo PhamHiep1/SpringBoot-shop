@@ -17,6 +17,7 @@ A comprehensive E-commerce backend system designed and developed to manage produ
 ### **Frontend Integration:**
 * **Framework:** Angular
   https://github.com/PhamHiep1/Shop-Frontend
+  Demo screenshots
 ---
 
 ## 👥 Team & Role
