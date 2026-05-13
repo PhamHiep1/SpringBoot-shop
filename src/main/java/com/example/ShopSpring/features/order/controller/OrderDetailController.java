@@ -1,11 +1,13 @@
 package com.example.ShopSpring.features.order.controller;
 
+import com.example.ShopSpring.common.dto.ResponseObject;
 import com.example.ShopSpring.features.order.dto.OrderDetailRequest;
 import com.example.ShopSpring.features.order.service.OrderDetailService;
 import com.example.ShopSpring.features.order.model.OrderDetail;
 import com.example.ShopSpring.features.order.dto.OrderDetailResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -28,7 +30,12 @@ public class OrderDetailController {
         OrderDetail orderDetail =  orderDetailService
                 .createOrderDetail(orderDetailRequest);
         return ResponseEntity.ok(
-                OrderDetailResponse.fromOrderDetailResponse(orderDetail));
+                ResponseObject.builder()
+                .data(OrderDetailResponse.fromOrderDetailResponse(orderDetail))
+                .message("create order detail successfully")
+                .status(HttpStatus.OK)
+                .build()
+        );
     }
 
     @GetMapping("/{id}")
@@ -36,8 +43,14 @@ public class OrderDetailController {
             @Valid @PathVariable(value="id") Long id
     ){
         OrderDetail orderDetail = orderDetailService.getOrderDetail(id);
-        return ResponseEntity.ok(OrderDetailResponse
-                .fromOrderDetailResponse(orderDetail));
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .data(OrderDetailResponse
+                                .fromOrderDetailResponse(orderDetail))
+                        .message("get order detail successfully")
+                        .status(HttpStatus.OK)
+                        .build()
+        );
     }
 
     @GetMapping("/order/{order_id}")
@@ -49,7 +62,13 @@ public class OrderDetailController {
         List<OrderDetailResponse> orderDetailResponses= orderDetails
                 .stream().map(OrderDetailResponse::fromOrderDetailResponse)
                 .toList();
-        return ResponseEntity.ok(orderDetailResponses);
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .data(orderDetailResponses)
+                        .message("get order detail by order id successfully")
+                        .status(HttpStatus.OK)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
@@ -60,8 +79,14 @@ public class OrderDetailController {
     ){
         OrderDetail orderDetail = orderDetailService.updateOrderDetail(id, orderDetailRequest);
 
-        return ResponseEntity.ok(OrderDetailResponse
-                .fromOrderDetailResponse(orderDetail));
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .data(OrderDetailResponse
+                                .fromOrderDetailResponse(orderDetail))
+                        .message("update order detail successfully")
+                        .status(HttpStatus.OK)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")
@@ -70,6 +95,6 @@ public class OrderDetailController {
             @Valid @PathVariable Long id
     ){
         orderDetailService.deleteOrderDetail(id);
-        return ResponseEntity.ok("update successfully order detail "+id);
+        return ResponseEntity.ok("delete successfully order detail "+id);
     }
 }

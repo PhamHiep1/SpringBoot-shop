@@ -1,5 +1,6 @@
 package com.example.ShopSpring.features.product.controller;
 
+import com.example.ShopSpring.common.dto.ResponseObject;
 import com.example.ShopSpring.features.product.dto.ProductListResponse;
 import com.example.ShopSpring.features.product.dto.ProductRequest;
 import com.example.ShopSpring.features.product.dto.ProductImageRequest;
@@ -170,7 +171,6 @@ public class ProductController {
                 page,limit,
                 //Sort.by("createdAt").descending());
                 Sort.by("id").ascending());
-
         ProductListResponse productResponses = productRedisService
                 .getAllProducts(keyword,categoryId,pageRequest);
 
@@ -184,7 +184,14 @@ public class ProductController {
 
             productRedisService.saveAllProducts(productResponses,keyword,categoryId,pageRequest);
         }
-        return ResponseEntity.ok(productResponses);
+
+        return ResponseEntity.ok(ResponseObject
+                .builder()
+                .message("Get products successfully")
+                .status(HttpStatus.OK)
+                .data(productResponses)
+                .build()
+        );
 
     }
 
@@ -195,7 +202,6 @@ public class ProductController {
         Product existingProduct= productService.getProductById(id);
         return ResponseEntity.ok(
                 ProductResponse.fromProduct(existingProduct));
-
     }
 
     @GetMapping("/by-ids")

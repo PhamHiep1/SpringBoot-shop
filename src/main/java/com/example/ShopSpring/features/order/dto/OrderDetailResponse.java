@@ -1,6 +1,8 @@
 package com.example.ShopSpring.features.order.dto;
 
 import com.example.ShopSpring.features.order.model.OrderDetail;
+import com.example.ShopSpring.features.product.dto.ProductResponse;
+import com.example.ShopSpring.features.product.model.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +19,7 @@ public class OrderDetailResponse    {
     @JsonProperty("order_id")
     private Long orderId;
 
-    @JsonProperty("product_id")
-    private Long productId;
+    private ProductResponse productResponse;
 
     private Float price;
 
@@ -33,15 +34,17 @@ public class OrderDetailResponse    {
     public static OrderDetailResponse fromOrderDetailResponse(
             OrderDetail orderDetail
     ){
+
+
          return  OrderDetailResponse
                  .builder()
                  .id(orderDetail.getId())
                  .orderId(orderDetail.getOrder().getId())
-                 .productId(orderDetail.getProduct().getId())
+                 .productResponse(ProductResponse.fromProduct(orderDetail.getProduct()))
                  .color(orderDetail.getColor())
                  .price(orderDetail.getPrice())
                  .totalMoney(orderDetail.getTotalMoney())
-                 .numberOfProduct(orderDetail.getNumberOfProduct())
+                 .numberOfProduct(orderDetail.getNumberOfProducts())
                 .build();
     }
 }

@@ -32,8 +32,8 @@ public class OrderDetail {
     @Column(nullable = false)
     private Float price;
 
-    @Column(name = "number_of_product",nullable = false)
-    private int numberOfProduct;
+    @Column(name = "number_of_products",nullable = false)
+    private int numberOfProducts;
 
     @Column(name = "total_money",nullable = false)
     private Float totalMoney;

@@ -20,6 +20,9 @@ import java.util.List;
 @Builder
 public class OrderResponse extends BaseResponse {
 
+
+    private Long id;
+
     @JsonProperty("user_id")
     private Long userId;
 
@@ -67,6 +70,7 @@ public class OrderResponse extends BaseResponse {
 
     public static OrderResponse fromOrder(Order order){
         return OrderResponse.builder()
+                .id(order.getId())
                 .userId(order.getUser().getId())
                 .fullName(order.getFullName())
                 .address(order.getAddress())

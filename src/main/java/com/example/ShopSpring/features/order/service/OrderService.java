@@ -25,6 +25,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,16 +63,23 @@ public class OrderService implements IOrderService {
         order.setActive(true);
         order.setShippingDate(shippingDate);
 
+        List<Long> productIds = orderRequest.getCartItems().stream()
+                .map(CartItemRequest::getProductId).toList();
+        List<Product> products = productRepository.findAllByIdIn(productIds);
+
+        // convert products to map to optimize query
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
         List< OrderDetail> orderDetails = new ArrayList<>();
+        List<Product> productsToUpdate = new ArrayList<>();
         float totalAmount = 0;
+
         for(CartItemRequest cartItem: orderRequest.getCartItems()){
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
-            
-            Product existingProduct = productRepository
-                    .findById(cartItem.getProductId())
-                    .orElseThrow(()->
-                            new DataNotFoundException("can not find product id"));
+
+            Product existingProduct = productMap.get(cartItem.getProductId());
 
             // check quantity
             if(cartItem.getQuantity() > existingProduct.getQuantity()){
@@ -79,16 +88,17 @@ public class OrderService implements IOrderService {
 
             // update quantity
             existingProduct.setQuantity(existingProduct.getQuantity() - cartItem.getQuantity());
-            productRepository.save(existingProduct);
+            productsToUpdate.add(existingProduct);
 
             orderDetail.setProduct(existingProduct);
-            orderDetail.setNumberOfProduct(cartItem.getQuantity());
+            orderDetail.setNumberOfProducts(cartItem.getQuantity());
             orderDetail.setTotalMoney(existingProduct.getPrice() * cartItem.getQuantity());
             orderDetail.setPrice(existingProduct.getPrice());
 
             totalAmount += orderDetail.getTotalMoney();
             orderDetails.add(orderDetail);
         }
+        productRepository.saveAll(productsToUpdate);
         orderDetailRepository.saveAll(orderDetails);
         order.setOrderDetails(orderDetails);
         order.setTotalMoney(totalAmount);

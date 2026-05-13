@@ -1,6 +1,7 @@
 package com.example.ShopSpring.features.order.controller;
 
 
+import com.example.ShopSpring.common.dto.ResponseObject;
 import com.example.ShopSpring.features.order.dto.OrderListResponse;
 import com.example.ShopSpring.features.order.dto.OrderRequest;
 import com.example.ShopSpring.features.order.dto.OrderResponse;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -67,7 +69,7 @@ public class OrderController {
         return ResponseEntity.ok("update successfully order "+id);
     }
 
-    @GetMapping("/by-keyword")
+    @GetMapping("/get-orders-by-keyword")
     public ResponseEntity<?> getOrdersByKeyword(
             @Valid @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
@@ -84,10 +86,16 @@ public class OrderController {
         int totalPages = orderPage.getTotalPages();
         List<OrderResponse> orders = orderPage.getContent();
 
-        return ResponseEntity.ok(OrderListResponse
+
+        return ResponseEntity.ok(ResponseObject
                 .builder()
-                .orders(orders)
-                .totalPages(totalPages)
+                .data(OrderListResponse
+                        .builder()
+                        .orders(orders)
+                        .totalPages(totalPages)
+                        .build())
+                .message("get orders by keyword successfully")
+                .status(HttpStatus.OK)
                 .build()
         );
     }

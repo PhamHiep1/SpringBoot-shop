@@ -15,5 +15,5 @@ public class CartItemRequest {
     private Long productId;
 
     @JsonProperty("quantity")
-    private int quantity;
+    private Integer quantity;
 }
