@@ -6,7 +6,7 @@ A comprehensive E-commerce backend system designed and developed to manage produ
 ## 🛠️ Tech Stack
 
 ### **Backend:**
-* **Language:** Java 17
+* **Language:** Java 21
 * **Framework:** Spring Boot 3.x
 * **Security:** Spring Security 6.x, JSON Web Token (JWT), Refresh Token Rotation
 * **Database:** MySQL
@@ -14,9 +14,10 @@ A comprehensive E-commerce backend system designed and developed to manage produ
 * **Error Handling:** Global Exception Handling (`@RestControllerAdvice`)
 * **Testing:** Postman
 
-### **Frontend Integration:**
+### **Frontend Integration & Demo screenshots:**
 * **Framework:** Angular
   https://github.com/PhamHiep1/Shop-Frontend
+  
 ---
 
 ## 👥 Team & Role
